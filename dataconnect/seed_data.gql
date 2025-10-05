@@ -1,0 +1,11 @@
+mutation SeedDatabase @auth(level: USER) {
+  category_upsertMany(data: [
+    { name: "Science", description: "Test your knowledge of the natural world." },
+    { name: "Technology", description: "Explore the latest technological advancements." },
+    { name: "History", description: "Delve into the past and uncover historical events." }
+  ])
+  user_upsertMany(data: [
+    { username: "bobuser", email: "bob@example.com", displayName: "Bob User" },
+    { username: "janedoe", email: "jane@example.com", displayName: "Jane Doe" }
+  ])
+}

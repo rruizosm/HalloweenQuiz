@@ -1,0 +1,10 @@
+{
+  "emulators": {
+    "dataconnect": {
+      "dataDir": "dataconnect/.dataconnect/pgliteData"
+    }
+  },
+  "database": {
+    "rules": "database.rules.json"
+  }
+}

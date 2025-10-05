@@ -1,0 +1,37 @@
+# list all public quizzes
+query ListPublicQuizzes @auth(level: PUBLIC) {
+  quizzes(where: { isPublic: { eq: true } }) {
+    id
+    title
+    description
+    category {
+      id
+      name
+    }
+  }
+}
+
+# create a new quiz
+mutation CreateQuiz($title: String!, $description: String!, $categoryId: UUID!) @auth(level: USER) {
+  quiz_insert(data: {
+    title: $title,
+    description: $description,
+    categoryId: $categoryId,
+    authorId_expr: "auth.uid",
+    isPublic: false
+  })
+}
+
+# update an existing quiz
+mutation UpdateQuiz($id: UUID!, $title: String, $description: String, $categoryId: UUID) @auth(level: USER) {
+  quiz_update(key: { id: $id }, data: {
+    title: $title,
+    description: $description,
+    categoryId: $categoryId
+  })
+}
+
+# delete a quiz
+mutation DeleteQuiz($id: UUID!) @auth(level: USER) {
+  quiz_delete(key: { id: $id })
+}
