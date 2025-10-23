@@ -1,12 +1,19 @@
-import 'package:firebase_database/firebase_database.dart';
+// import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:casa_rural_1/sections/home.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:casa_rural_1/app/database_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+// import 'package:casa_rural_1/app/database_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
     DevicePreview(
       builder: (context) => const MyApp()
@@ -103,9 +110,9 @@ class SelectionScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                         ),),
-                        onPressed: ()=> _saveSelection(context, "A"),
+                        onPressed: ()=> _saveSelection(context, "teamA"),
                          
-                        child: Text("A", style: GoogleFonts.creepster(fontSize: 30,),)),
+                        child: Text("teamA", style: GoogleFonts.creepster(fontSize: 30,),)),
                       ),
                     ),
                   ),
@@ -119,8 +126,8 @@ class SelectionScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                         ),),
-                        onPressed: ()=> _saveSelection(context, "B"),                      
-                        child: Text("B", style: GoogleFonts.creepster(fontSize: 30, color: Colors.black),)
+                        onPressed: ()=> _saveSelection(context, "teamB"),                      
+                        child: Text("teamB", style: GoogleFonts.creepster(fontSize: 30, color: Colors.black),)
                         ),
                       ),
                     ),

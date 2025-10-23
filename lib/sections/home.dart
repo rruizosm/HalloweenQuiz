@@ -1,12 +1,22 @@
-import 'dart:math';
+// import 'dart:math';
+// import 'dart:nativewrappers/_internal/vm/lib/internal_patch.dart';
+
+// import 'package:casa_rural_1/sections/classification.dart';
+// import 'dart:nativewrappers/_internal/vm/lib/developer.dart';
 
 import 'package:casa_rural_1/sections/classification.dart';
+import 'package:casa_rural_1/sections/setname.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+// import 'package:hugeicons/hugeicons.dart';
+import 'package:casa_rural_1/sections/icon_classification.dart';
+import 'package:casa_rural_1/app/database_service.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class Home extends StatefulWidget {
   final String selection;
-  const Home({Key? key, required this.selection}) : super(key: key  );
+  const Home({Key? key, required this.selection}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -14,14 +24,16 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool mostrarPista1 = false;
+  bool showMessage = false;
   bool mostrarPista2 = false;
   int puntuacion = 0;
   String mensaje = "";
   TextEditingController _controllerPregunta = TextEditingController();
   TextEditingController _controllerOverlay = TextEditingController();
+  final DatabaseService _dbService = DatabaseService();
 
   Map<String,List<Map<String, dynamic>>> fases = {
-    'A' : [
+    'teamA' : [
             {
               'pregunta': 'Pregunta 1',
               'texto': "¿Cuál es la capital de Australia?",
@@ -80,11 +92,11 @@ class _HomeState extends State<Home> {
               "respuestaFase": "35729852",
             },
     ],
-    'B' : [
+    'teamB' : [
         {
           'pregunta': 'Pregunta 1',
           'texto': "Si me tumbas, soy todo. Si me cortas por la cintura, me quedo en nada. ¿Qué soy?",
-          'pistas': [""],
+          'pistas': ["testo", "número"],
           'respuesta': "8",
           'siguienteFase': "",
           "respuestaFase": "20540316",
@@ -145,6 +157,10 @@ class _HomeState extends State<Home> {
 
   int faseActual = 0;
   bool mostrarOverlay=false;
+  bool mostrarRanking=false;
+
+  bool nombreEquipoDefinido = false;
+  String nombreEquipo  = "";
 
 
   void comprobarRespuesta(){
@@ -153,6 +169,21 @@ class _HomeState extends State<Home> {
     setState(() {
       if (respuestaUsuario.toLowerCase() == respuestaCorrecta.toLowerCase()) {
         mostrarOverlay=true;
+        mensaje = "";
+      }else {
+        setState(() {
+          mensaje = "Respuesta incorrecta. Inténtalo de nuevo.";
+          showMessage = true;        
+          _controllerPregunta.clear();
+          puntuacion--;
+        });
+
+        print(showMessage);
+        Future.delayed(Duration(seconds: 5), () {
+          setState(() {
+            showMessage = false;
+          });
+        });
       }
     });
   }
@@ -166,124 +197,171 @@ class _HomeState extends State<Home> {
         mostrarOverlay = false;
         mostrarPista1 = false;
         mostrarPista2 = false;
-        _controllerPregunta.clear();
         _controllerOverlay.clear();
         puntuacion += 10;
+        mensaje = "";
+        _dbService.update(path: 'quiz/teams/${widget.selection}', data: {'score': puntuacion});
+
       } else {
-        mensaje = "Respuesta incorrecta. Inténtalo de nuevo.";
-        puntuacion--;
+        setState(() {
+          mensaje = "Respuesta incorrecta. Inténtalo de nuevo.";
+          showMessage = true;        
+          _controllerOverlay.clear();
+        });
+        Future.delayed(Duration(seconds: 5), () {
+          setState(() {
+            showMessage = false;
+          });
+        });
       }
     });
+  }
 
+  void setClassification() {
+    setState(() {
+      mostrarRanking = !mostrarRanking;
+    });
+  }
+
+  void setEquipoDefinido() {
+    setState(() {
+      nombreEquipoDefinido = true;
+    _dbService.read(path: 'quiz/teams/${widget.selection}').then((DataSnapshot? snapshot) {
+    if (snapshot != null) {
+      final data = snapshot.value as Map<dynamic, dynamic>;
+      setState(() {
+        nombreEquipo = data['name'] ?? 0;
+      });
+    }
+    });
+    });
   }
   @override
-  Widget build(BuildContext context) {
 
-    return Stack(
-      children: [
-        Padding(
-          padding: EdgeInsetsGeometry.all(35),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Text(fases[widget.selection]![faseActual]['pregunta'], style: GoogleFonts.creepster(fontSize: 30, color: Colors.white)),
-              Text(fases[widget.selection]![faseActual]['texto'], style: GoogleFonts.creepster(fontSize: 24, color: Colors.white),),
-              mostrarPista1 
-              ? Container(
-                padding: EdgeInsets.all(10),
-                color: Colors.transparent,
-                child: Text(fases[widget.selection]![faseActual]['pistas'][0], style: GoogleFonts.creepster(fontSize: 20, color: Colors.white,)),
-              )
-              : InkWell(
-                onTap: () {
-                  setState(() {
-                    mostrarPista1 = true;
-                    puntuacion--;
-                  });
-                },
-                child: Icon(Icons.task_alt, size: 40, color: Colors.white,),
-              ),
-              mostrarPista2 ? Container(
-                padding: EdgeInsets.all(10),
-                color: Colors.transparent,
-                child: Text(fases[widget.selection]![faseActual]['pistas'][1], style: GoogleFonts.creepster(fontSize: 20, color: Colors.white),),
-              )
-              : InkWell(
-                onTap: () {
-                  setState(() {
-                    mostrarPista2 = true;
-                    puntuacion--;
-                  });
-                },
-                child: Icon(Icons.task_alt, size: 40, color: Colors.white,),
-              ),
-              TextField(
-                style: TextStyle(color: Colors.white),
-                controller: _controllerPregunta,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Respuesta',
-                  labelStyle: TextStyle(color: Colors.white),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  )
-                ),
-                onSubmitted: (value) => comprobarRespuesta(),
-              ),
-              Text("Puntuación: $puntuacion", style: GoogleFonts.creepster(fontSize: 25, color: Colors.white),),
-            ],
-          ),
-        ),
-        Stack(
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: SizedBox(
-                width: 350,
-                height: 600,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(20),
-                  ),  
-                ),
-              ),
-            )
-          ],
-        ),
-        if(mostrarOverlay) 
-          Container(
-            child: Center(
-              child: Card(
-                margin: const EdgeInsets.all(30),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    
-                    children: [
-                      Text(fases[widget.selection]![faseActual]['siguienteFase'], style: GoogleFonts.montserrat(fontSize: 20),),
-                      const SizedBox(height: 100,),
-                      TextField(
-                        controller: _controllerOverlay,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "Introduce tu respuesta",
-                        ),
+  Widget build(BuildContext context) {
+    if (nombreEquipoDefinido) {
+      return Stack(
+        children: [
+          Padding(
+            padding: EdgeInsetsGeometry.only(top: 20, left: 30, right: 30, bottom: 55),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ShaderMask(
+                    shaderCallback: (bounds) => LinearGradient(
+                      colors: [
+                        Color(0xFF4B0000), // sangre seca
+                        Color(0xFF8A0303), // rojo sangre
+                        Color(0xFF1A0000), // sombra profunda
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
+                    child: AutoSizeText(
+                      nombreEquipo,
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.creepster(
+                        fontSize: 60,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white, // color base (se reemplaza por el degradado)
                       ),
-                      const SizedBox(height: 60,),
-                      ElevatedButton(onPressed: validarOverlay, child: Text("Validar")),
-                    ],
-                  ),),
-              ),
+                    ),
+                  ),
+                Text(fases[widget.selection]![faseActual]['pregunta'], style: GoogleFonts.creepster(fontSize: 30, color: Colors.white)),
+                Text(fases[widget.selection]![faseActual]['texto'], style: GoogleFonts.creepster(fontSize: 24, color: Colors.white),),
+                mostrarPista1 
+                ? Container(
+                  padding: EdgeInsets.all(10),
+                  color: Colors.transparent,
+                  child: Text(fases[widget.selection]![faseActual]['pistas'][0], style: GoogleFonts.creepster(fontSize: 20, color: Colors.white,)),
+                )
+                : InkWell(
+                  onTap: () {
+                    setState(() {
+                      mostrarPista1 = true;
+                      puntuacion--;
+                      _dbService.update(path: 'quiz/teams/${widget.selection}', data: {'score':puntuacion});
+
+                    });
+                  },
+                  child: Icon(Icons.task_alt, size: 40, color: Colors.white,),
+                ),
+                mostrarPista2 ? Container(
+                  padding: EdgeInsets.all(10),
+                  color: Colors.transparent,
+                  child: Text(fases[widget.selection]![faseActual]['pistas'][1], style: GoogleFonts.creepster(fontSize: 20, color: Colors.white),),
+                )
+                : InkWell(
+                  onTap: () {
+                    setState(() {
+                      mostrarPista2 = true;
+                      puntuacion--;
+                      _dbService.update(path: 'quiz/teams/${widget.selection}', data: {'score':puntuacion});
+
+                    });
+                  },
+                  child: Icon(Icons.task_alt, size: 40, color: Colors.white,),
+                ),
+                TextField(
+                  style: TextStyle(color: Colors.white),
+                  controller: _controllerPregunta,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Respuesta',
+                    labelStyle: TextStyle(color: Colors.white),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    )
+                  ),
+                  onSubmitted: (value) => comprobarRespuesta(),
+                ),
+                if (mensaje!="" && showMessage)
+                Text(mensaje, style: GoogleFonts.montserrat(fontSize: 15, color: Colors.white),),
+                Text("Puntuación: $puntuacion", style: GoogleFonts.creepster(fontSize: 25, color: Colors.white),),
+              ],
             ),
           ),
-      ],
-    );
+          if (!mostrarOverlay) IconClassification(mostrarRanking: mostrarRanking, onRanking: setClassification,),
+          if(mostrarRanking)
+            Classification(onClose: setClassification,),
+          if(mostrarOverlay) 
+            Container(
+              child: Center(
+                child: Card(
+                  margin: const EdgeInsets.all(30),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      
+                      children: [
+                        Text(fases[widget.selection]![faseActual]['siguienteFase'], style: GoogleFonts.montserrat(fontSize: 20),),
+                        const SizedBox(height: 100,),
+                        TextField(
+                          controller: _controllerOverlay,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: "Introduce tu respuesta",
+                          ),
+                        ),
+                        const SizedBox(height: 60,),
+                        ElevatedButton(onPressed: validarOverlay, child: Text("Validar")),
+                        const SizedBox(height: 60,),
+                        if (mensaje!="" && showMessage)
+                        Text(mensaje, style: GoogleFonts.montserrat(fontSize: 15, color: Colors.red[700]),),
+                      ],
+                    ),),
+                ),
+              ),
+            ),
+        ],
+      ); } else {
+      return SetName(selection: widget.selection, onSetEquipoDefinido: setEquipoDefinido,); }
   }
 }

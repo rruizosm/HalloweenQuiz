@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "938387022119",
+    "firebase_url": "https://jabolin-331ea-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "jabolin-331ea",
+    "storage_bucket": "jabolin-331ea.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:938387022119:android:c8cc2095e615d8d5dbc902",
+        "android_client_info": {
+          "package_name": "com.example.casa_rural_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApV_1tS7AAgKa-dGnC6Q4Uwd-pACVH5Cw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
