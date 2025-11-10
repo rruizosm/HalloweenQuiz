@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,7 +8,8 @@ import 'package:casa_rural_1/app/database_service.dart';
 
 class Classification extends StatefulWidget {
   final VoidCallback onClose;
-  const Classification({super.key, required this.onClose});
+  final String id;
+  const Classification({super.key, required this.onClose, required this.id});
 
   @override
   State<Classification> createState() => _ClassificationState();
@@ -26,20 +29,35 @@ class _ClassificationState extends State<Classification> {
     super.initState();
     
     // Listen for real-time updates
-    _dbService.read(path: 'quiz/teams').then((DataSnapshot? snapshot) {
+    _dbService.read(path: 'quiz/devices').then((DataSnapshot? snapshot) {
       if (snapshot != null) {
         final data = snapshot.value as Map<dynamic, dynamic>;
+        data.forEach((key, value) {
+          final team = value['widgetTeam'];
+          final int score = value['score'];
+          final name = value['name'];
+          if (team == 'teamA') {
+            teamAScore += score;
+            teamAName = name ?? "Team A";
+          } else if (team == 'teamB') {
+            teamBScore += score;
+            teamBName = name ?? "Team B";
+          }
+        });
+        
         setState(() {
-          teamAScore = data['teamA']?['score'] ?? 0;
-          teamBScore = data['teamB']?['score'] ?? 0;
-          teamAName = data['teamA']?['name'] ?? "Team A";
-          teamBName = data['teamB']?['name'] ?? "Team B";
+          teamAScore = teamAScore;
+          teamBScore = teamBScore;
+          teamAName = teamAName;
+          teamBName = teamBName;
         });
       }
     });
   }
 
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return Stack(
           children: [
             Align(
@@ -50,8 +68,8 @@ class _ClassificationState extends State<Classification> {
                 child: Stack(
                   children: [
                     Container(
-                      width: 350,
-                      height: 650,
+                      width: screenWidth * 0.8,
+                      height: screenHeight * 0.8,
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,

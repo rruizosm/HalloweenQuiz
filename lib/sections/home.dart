@@ -1,18 +1,18 @@
-// import 'dart:math';
-// import 'dart:nativewrappers/_internal/vm/lib/internal_patch.dart';
-
-// import 'package:casa_rural_1/sections/classification.dart';
-// import 'dart:nativewrappers/_internal/vm/lib/developer.dart';
-
+import 'package:casa_rural_1/sections/boton_ayuda_container.dart';
 import 'package:casa_rural_1/sections/classification.dart';
+import 'package:casa_rural_1/sections/device_id_service.dart';
 import 'package:casa_rural_1/sections/setname.dart';
+import 'package:casa_rural_1/sections/submit.dart';
+import 'package:casa_rural_1/sections/boton_ayuda.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-// import 'package:hugeicons/hugeicons.dart';
+import 'package:casa_rural_1/sections/finalChest.dart';
 import 'package:casa_rural_1/sections/icon_classification.dart';
 import 'package:casa_rural_1/app/database_service.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'dart:convert';
 
 class Home extends StatefulWidget {
   final String selection;
@@ -27,341 +27,265 @@ class _HomeState extends State<Home> {
   bool showMessage = false;
   bool mostrarPista2 = false;
   int puntuacion = 0;
-  String mensaje = "";
-  TextEditingController _controllerPregunta = TextEditingController();
   TextEditingController _controllerOverlay = TextEditingController();
   final DatabaseService _dbService = DatabaseService();
 
-  Map<String,List<Map<String, dynamic>>> fases = {
-    'teamA' : [
-            {
-              'pregunta': 'Pregunta 1',
-              'texto': "¿Cuál es la capital de Australia?",
-              'pistas': ["No es Sydney ni Melbourne.", "Su nombre comienza con 'C' y termina con 'a'."],
-              'respuesta': "Camberra",
-              'siguienteFase': "Nunca ha sido tocada,\nse guarda intacta.\nLa llaman pura,\ny no conoce hombre.",
-              "respuestaFase": "26489918",
-
-            },
-            {
-              'pregunta': 'Pregunta 2',
-              'texto': "1, 2, 6, 24, 120, 720, 5040, ?",
-              'pistas': ["Multiplicación", "Factorial"],
-              'respuesta': "40320",
-              'siguienteFase': "Un espacio oscuro,\con muros que no respiran.\nA veces guarda secretos,\na veces solo rutina.\nSe abre al curioso,\ny calla cuando se cierra.",
-              "respuestaFase": "61478100",
-            },    
-            {
-              'pregunta': 'Pregunta 3',
-              'texto': "¿Qué partícula subatómica es responsable de conferir masa a otras partículas elementales, según el Modelo Estándar de la física de partículas?",
-              'pistas': ["CERN", "Empieza por H"],
-              'respuesta': "Higgs",
-              'siguienteFase': "Un cuerpo de hierro,\nque despierta con fuego.\nGuarda brasas rojas,\nAlimenta la espera,\ny calla cuando se enfría.",
-              "respuestaFase": "53080104",
-            },    
-            {
-              'pregunta': 'Pregunta 4',
-              'texto': "¿Cuál fue el último país en unirse a la OTAN?",
-              'pistas': ["Europeo", "S"],
-              'respuesta': "",
-              'siguienteFase': "Un refugio silencioso,\nque acoge sin preguntar.\nGuarda sueños y secretos,\ny a veces susurra descanso.\nSe abre cada noche,\ny calla con la mañana.",
-              "respuestaFase": "22559516",
-            },    
-            {
-              'pregunta': 'Pregunta 5',
-              'texto': "¿Cuantos días ha vivido la persona más joven de este grupo?",
-              'pistas': ["Pista 1", "Pista 2"],
-              'respuesta': "9144",
-              'siguienteFase': "",
-              "respuestaFase": "74217812",
-            },
-            {
-              'pregunta': 'Pregunta 6',
-              'texto': "Calcular:∬(xcos(y)+2y) dA\ndonde R es el rectángulo: 0≤x≤2 , 0≤y≤𝜋/2",
-              'pistas': ["Pista 1", "Pista 2"],
-              'respuesta': "4+3pi",
-              'siguienteFase': "",
-              "respuestaFase": "94440471",
-            },
-            {
-              'pregunta': 'Pregunta 7',
-              'texto': "El aprendizaje continuo es la clave nvertir",
-              'pistas': ["Pista 1", "Pista 2"],
-              'respuesta': "",
-              'siguienteFase': "",
-              "respuestaFase": "35729852",
-            },
-    ],
-    'teamB' : [
-        {
-          'pregunta': 'Pregunta 1',
-          'texto': "Si me tumbas, soy todo. Si me cortas por la cintura, me quedo en nada. ¿Qué soy?",
-          'pistas': ["testo", "número"],
-          'respuesta': "8",
-          'siguienteFase': "",
-          "respuestaFase": "20540316",
-
-        },
-        {
-          'pregunta': 'Pregunta 2',
-          'texto': "Un hombre empuja su coche. Se detiene al llegar a un hotel y de pronto sabe que está arruinado. ¿Qué ha pasado?",
-          'pistas': [""],
-          'respuesta': "Monopoly",
-          'siguienteFase': "",
-          "respuestaFase": "35426264",
-        }, 
-        {
-          'pregunta': 'Pregunta 3',
-          'texto': "Si estás a 2,4 metros de una puerta y con cada movimiento avanzas la mitad de la distancia hasta la puerta. ¿Cuántos movimientos necesitarás para llegar a la puerta?",
-          'pistas': [""],
-          'respuesta': "Nunca",
-          'siguienteFase': "",
-          "respuestaFase": "45159988",
-
-        },
-        {
-          'pregunta': 'Pregunta 4',
-          'texto': "Una pera cuesta 40 céntimos, una banana 60 céntimos y una ciruela 80 céntimos. ¿Cuánto cuesta una manzana?",
-          'pistas': [""],
-          'respuesta': "60",
-          'siguienteFase': "",
-          "respuestaFase": "69390974",
-        }, 
-        {
-          'pregunta': 'Pregunta 5',
-          'texto': "¿Cómo se llama la estación de esquí a la que hemos ido a todos en Font Romeu? (dos palabras)",
-          'pistas': [""],
-          'respuesta': "Pyrinees 2000",
-          'siguienteFase': "",
-          "respuestaFase": "53217556",
-
-        },
-        {
-          'pregunta': 'Pregunta 6',
-          'texto': "¿Cuándo se estrenó Interestellar?",
-          'pistas': [""],
-          'respuesta': "2014",
-          'siguienteFase': "",
-          "respuestaFase": "88128090",
-        },
-        {
-          'pregunta': 'Pregunta 7',
-          'texto': "",
-          'pistas': [""],
-          'respuesta': "",
-          'siguienteFase': "",
-          "respuestaFase": "78015938",
-        },  
-    ],
-  };
-
   int faseActual = 0;
-  bool mostrarOverlay=false;
-  bool mostrarRanking=false;
+  bool mostrarOverlay = false;
+  bool mostrarRanking = false;
+  bool ayudaSolicitada = false;
 
   bool nombreEquipoDefinido = false;
-  String nombreEquipo  = "";
+  String nombreEquipo = "";
+  String deviceId = "";
+  String widgetEquipo = "";
+  Map<String, dynamic> data = {};
 
+  @override
+  void initState() {
+    super.initState();
+    initDevice();
+    loadData();
+  }
 
-  void comprobarRespuesta(){
-    String respuestaUsuario = _controllerPregunta.text;
-    String respuestaCorrecta = fases[widget.selection]![faseActual]['respuesta'];
-    setState(() {
-      if (respuestaUsuario.toLowerCase() == respuestaCorrecta.toLowerCase()) {
-        mostrarOverlay=true;
-        mensaje = "";
-      }else {
+  Future<void> initDevice() async {
+    final id = await DeviceIdService.getDeviceId();
+    final snapshot = await _dbService.read(path: 'quiz/devices/$id');
+
+    if (snapshot != null && snapshot.value != null) {
+      setState(() => deviceId = id);
+      _listenToScoreChanges(); // ✅ start real-time listener
+      getTeamValues();
+    } else {
+      await _dbService.create(path: 'quiz/devices/$id', data: {
+        'setName': false,
+        'name': "",
+        'phase': faseActual,
+        'score': 0,
+        'widgetTeam': widget.selection,
+      });
+      setState(() => deviceId = id);
+      _listenToScoreChanges();
+    }
+  }
+
+  void _listenToScoreChanges() {
+    FirebaseDatabase.instance.ref('quiz/devices/$deviceId/score').onValue.listen((event) {
+      final val = event.snapshot.value;
+      if (val != null) {
         setState(() {
-          mensaje = "Respuesta incorrecta. Inténtalo de nuevo.";
-          showMessage = true;        
-          _controllerPregunta.clear();
-          puntuacion--;
-        });
-
-        print(showMessage);
-        Future.delayed(Duration(seconds: 5), () {
-          setState(() {
-            showMessage = false;
-          });
+          final n = val is int ? val : (val is double ? val.toInt() : 0);
+          puntuacion = n;
         });
       }
     });
   }
 
-  void validarOverlay() {
-    String respuestaOverlay = _controllerOverlay.text;
-    String respuestaCorrectaOverlay = fases[widget.selection]![faseActual]['respuestaFase'];
-    setState(() {
-      if (respuestaOverlay.toLowerCase() == respuestaCorrectaOverlay.toLowerCase()) {
+  Future<void> loadData() async {
+    final jsonString = await rootBundle.loadString('assets/questions.json');
+    data = json.decode(jsonString);
+  }
+
+  void getTeamValues() async {
+    final snapshot = await _dbService.read(path: 'quiz/devices/$deviceId');
+    if (snapshot != null && snapshot.value != null) {
+      final dataMap = snapshot.value as Map<dynamic, dynamic>;
+      setState(() {
+        nombreEquipoDefinido = dataMap['setName'] ?? false;
+        nombreEquipo = dataMap['name'] ?? "";
+        faseActual = dataMap['phase'] ?? 0;
+        widgetEquipo = dataMap['widgetTeam'] ?? "";
+        final rawScore = dataMap['score'];
+        puntuacion = (rawScore is int) ? rawScore : (rawScore is double ? rawScore.toInt() : 0);
+      });
+    }
+  }
+
+  void validarOverlay() async {
+    String respuestaOverlay = _controllerOverlay.text.trim();
+    String respuestaCorrectaOverlay = data[widgetEquipo]![faseActual]['respuestaFase'];
+    if (respuestaOverlay.toLowerCase() == respuestaCorrectaOverlay.toLowerCase()) {
+      setState(() {
         faseActual++;
         mostrarOverlay = false;
         mostrarPista1 = false;
         mostrarPista2 = false;
+        ayudaSolicitada = false;
         _controllerOverlay.clear();
-        puntuacion += 10;
-        mensaje = "";
-        _dbService.update(path: 'quiz/teams/${widget.selection}', data: {'score': puntuacion});
+      });
 
-      } else {
-        setState(() {
-          mensaje = "Respuesta incorrecta. Inténtalo de nuevo.";
-          showMessage = true;        
-          _controllerOverlay.clear();
-        });
-        Future.delayed(Duration(seconds: 5), () {
-          setState(() {
-            showMessage = false;
-          });
-        });
-      }
-    });
-  }
-
-  void setClassification() {
-    setState(() {
-      mostrarRanking = !mostrarRanking;
-    });
-  }
-
-  void setEquipoDefinido() {
-    setState(() {
-      nombreEquipoDefinido = true;
-    _dbService.read(path: 'quiz/teams/${widget.selection}').then((DataSnapshot? snapshot) {
-    if (snapshot != null) {
-      final data = snapshot.value as Map<dynamic, dynamic>;
+      puntuacion += 5;
+      await _dbService.update(path: 'quiz/devices/$deviceId', data: {
+        'score': puntuacion,
+        'phase': faseActual,
+      });
+    } else {
       setState(() {
-        nombreEquipo = data['name'] ?? 0;
+        showMessage = true;
+        _controllerOverlay.clear();
+      });
+      Future.delayed(const Duration(seconds: 4), () {
+        if (mounted) setState(() => showMessage = false);
       });
     }
-    });
-    });
   }
+
+  void setClassification() => setState(() => mostrarRanking = !mostrarRanking);
+
+  void setMostrarOverlay() => setState(() {
+        mostrarOverlay = !mostrarOverlay;
+        ayudaSolicitada = false;
+      });
+
+  void setEquipoDefinido() async {
+    setState(() => nombreEquipoDefinido = true);
+    await _dbService.update(path: 'quiz/devices/$deviceId', data: {'setName': true});
+    getTeamValues();
+  }
+
+  Future<void> actualizarPuntuacion(int delta) async {
+    setState(() => puntuacion += delta);
+    await _dbService.update(path: 'quiz/devices/$deviceId', data: {'score': puntuacion});
+  }
+
   @override
-
   Widget build(BuildContext context) {
-    if (nombreEquipoDefinido) {
-      return Stack(
-        children: [
-          Padding(
-            padding: EdgeInsetsGeometry.only(top: 20, left: 30, right: 30, bottom: 55),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ShaderMask(
-                    shaderCallback: (bounds) => LinearGradient(
-                      colors: [
-                        Color(0xFF4B0000), // sangre seca
-                        Color(0xFF8A0303), // rojo sangre
-                        Color(0xFF1A0000), // sombra profunda
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
-                    child: AutoSizeText(
-                      nombreEquipo,
-                      maxLines: 1,
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.creepster(
-                        fontSize: 60,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white, // color base (se reemplaza por el degradado)
-                      ),
-                    ),
-                  ),
-                Text(fases[widget.selection]![faseActual]['pregunta'], style: GoogleFonts.creepster(fontSize: 30, color: Colors.white)),
-                Text(fases[widget.selection]![faseActual]['texto'], style: GoogleFonts.creepster(fontSize: 24, color: Colors.white),),
-                mostrarPista1 
-                ? Container(
-                  padding: EdgeInsets.all(10),
-                  color: Colors.transparent,
-                  child: Text(fases[widget.selection]![faseActual]['pistas'][0], style: GoogleFonts.creepster(fontSize: 20, color: Colors.white,)),
-                )
-                : InkWell(
-                  onTap: () {
-                    setState(() {
-                      mostrarPista1 = true;
-                      puntuacion--;
-                      _dbService.update(path: 'quiz/teams/${widget.selection}', data: {'score':puntuacion});
+    if (faseActual > 6) return const FinalChest();
 
-                    });
-                  },
-                  child: Icon(Icons.task_alt, size: 40, color: Colors.white,),
-                ),
-                mostrarPista2 ? Container(
-                  padding: EdgeInsets.all(10),
-                  color: Colors.transparent,
-                  child: Text(fases[widget.selection]![faseActual]['pistas'][1], style: GoogleFonts.creepster(fontSize: 20, color: Colors.white),),
-                )
-                : InkWell(
-                  onTap: () {
-                    setState(() {
-                      mostrarPista2 = true;
-                      puntuacion--;
-                      _dbService.update(path: 'quiz/teams/${widget.selection}', data: {'score':puntuacion});
+    if (!nombreEquipoDefinido) {
+      return SetName(
+        selection: widgetEquipo,
+        onSetEquipoDefinido: setEquipoDefinido,
+        deviceId: deviceId,
+      );
+    }
 
-                    });
-                  },
-                  child: Icon(Icons.task_alt, size: 40, color: Colors.white,),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 20, left: 30, right: 30, bottom: 55),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [Color(0xFF4B0000), Color(0xFF8A0303), Color(0xFF1A0000)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
+                child: AutoSizeText(
+                  nombreEquipo,
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.creepster(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
-                TextField(
-                  style: TextStyle(color: Colors.white),
-                  controller: _controllerPregunta,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Respuesta',
-                    labelStyle: TextStyle(color: Colors.white),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    )
-                  ),
-                  onSubmitted: (value) => comprobarRespuesta(),
-                ),
-                if (mensaje!="" && showMessage)
-                Text(mensaje, style: GoogleFonts.montserrat(fontSize: 15, color: Colors.white),),
-                Text("Puntuación: $puntuacion", style: GoogleFonts.creepster(fontSize: 25, color: Colors.white),),
-              ],
-            ),
+              ),
+              Text(data[widgetEquipo]![faseActual]['pregunta'],
+                  style: GoogleFonts.creepster(fontSize: 30, color: Colors.white)),
+              Text(data[widgetEquipo]![faseActual]['texto'],
+                  style: GoogleFonts.creepster(fontSize: 24, color: Colors.white)),
+              Submit(
+                selection: widgetEquipo,
+                faseActual: faseActual,
+                onMostrarOverlay: setMostrarOverlay,
+                deviceId: deviceId,
+                onRespuesta: (acierto) => actualizarPuntuacion(acierto ? 5 : -1),
+              ),
+            ],
           ),
-          if (!mostrarOverlay) IconClassification(mostrarRanking: mostrarRanking, onRanking: setClassification,),
-          if(mostrarRanking)
-            Classification(onClose: setClassification,),
-          if(mostrarOverlay) 
-            Container(
-              child: Center(
-                child: Card(
-                  margin: const EdgeInsets.all(30),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      
-                      children: [
-                        Text(fases[widget.selection]![faseActual]['siguienteFase'], style: GoogleFonts.montserrat(fontSize: 20),),
-                        const SizedBox(height: 100,),
-                        TextField(
-                          controller: _controllerOverlay,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: "Introduce tu respuesta",
+        ),
+        BotonAyuda(
+          ayudaSolicitada: ayudaSolicitada,
+          onSolicitarAyuda: () {
+            if (!ayudaSolicitada) {
+              actualizarPuntuacion(-3);
+              setState(() => ayudaSolicitada = true);
+            }
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                backgroundColor: Colors.black87,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                title: Text("Ayuda", style: GoogleFonts.creepster(color: Colors.red, fontSize: 28)),
+                content: Text(
+                  data[widgetEquipo]![faseActual]['pista'] ?? "Aquí puedes recibir una pista.",
+                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("Cerrar", style: TextStyle(color: Colors.redAccent)),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        if (!mostrarOverlay)
+          IconClassification(mostrarRanking: mostrarRanking, onRanking: setClassification),
+        if (mostrarRanking) Classification(id: deviceId, onClose: setClassification),
+        if (mostrarOverlay)
+          Center(
+            child: Card(
+              color: Colors.black,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20), side: const BorderSide(color: Colors.red, width: 2)),
+              margin: const EdgeInsets.all(10),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(data[widgetEquipo]![faseActual]['siguienteFase'],
+                        style: GoogleFonts.montserrat(fontSize: 20, color: Colors.white)),
+                    TextField(
+                      controller: _controllerOverlay,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Introduce tu respuesta",
+                        labelStyle: TextStyle(color: Colors.white),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                      ),
+                      onSubmitted: (_) => validarOverlay(),
+                    ),
+                    BotonAyudaSimple(
+                      ayudaSolicitada: ayudaSolicitada,
+                      onSolicitarAyuda: () {
+                        if (!ayudaSolicitada) {
+                          actualizarPuntuacion(-3);
+                          setState(() => ayudaSolicitada = true);
+                        }
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            backgroundColor: Colors.black87,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            title: Text("Ayuda", style: GoogleFonts.creepster(color: Colors.red, fontSize: 28)),
+                            content: Text(
+                              data[widgetEquipo]![faseActual]['pista'] ?? "Aquí puedes recibir una pista.",
+                              style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text("Cerrar", style: TextStyle(color: Colors.redAccent)),
+                              ),
+                            ],
                           ),
-                        ),
-                        const SizedBox(height: 60,),
-                        ElevatedButton(onPressed: validarOverlay, child: Text("Validar")),
-                        const SizedBox(height: 60,),
-                        if (mensaje!="" && showMessage)
-                        Text(mensaje, style: GoogleFonts.montserrat(fontSize: 15, color: Colors.red[700]),),
-                      ],
-                    ),),
+                        );
+                      },
+                    ),
+
+                  ],
                 ),
               ),
             ),
-        ],
-      ); } else {
-      return SetName(selection: widget.selection, onSetEquipoDefinido: setEquipoDefinido,); }
+          ),
+      ],
+    );
   }
 }

@@ -6,7 +6,8 @@ import 'package:casa_rural_1/app/database_service.dart';
 class SetName extends StatefulWidget {
   final String selection;
   final VoidCallback onSetEquipoDefinido;
-  const SetName({super.key, required this.selection, required this.onSetEquipoDefinido});
+  final String deviceId;
+  const SetName({super.key, required this.selection, required this.onSetEquipoDefinido, required this.deviceId});
 
   @override
   State<SetName> createState() => _SetNameState();
@@ -42,7 +43,8 @@ class _SetNameState extends State<SetName> {
                   ),
                   onSubmitted: (value) {  
                     if(value.isNotEmpty) {
-                      _dbService.update(path: 'quiz/teams/${widget.selection}', data: {'name': _controllerPregunta.text.toUpperCase()});
+                      print("DeviceID: "+widget.deviceId);
+                      _dbService.update(path: 'quiz/devices/${widget.deviceId}', data: {'name': _controllerPregunta.text.toUpperCase()});
                       widget.onSetEquipoDefinido();
                       _controllerPregunta.clear();}
                     ;
