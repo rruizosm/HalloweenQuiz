@@ -1,0 +1,106 @@
+{"teamA" : [
+    {
+    "pregunta": "Pregunta 1",
+    "texto": "Cual es la capital de Uruguay?",
+    "respuesta": "Montevideo",
+    "siguienteFase": "Nunca ha sido tocada,\nse guarda intacta.\nLa llaman pura,\ny no conoce hombre.",
+    "respuestaFase": "26489918"
+
+    },
+    {
+    "pregunta": "Pregunta 2",
+    "texto": "2, 6, 12, 20, 30, ?",
+    "respuesta": "42",
+    "siguienteFase": "Un espacio oscuro,\ncon muros que no respiran.\nA veces guarda secretos,\na veces solo rutina.\nSe abre al curioso,\ny calla cuando se cierra.",
+    "respuestaFase": "61478100"
+    },    
+    {
+    "pregunta": "Pregunta 3",
+    "texto": "¿Qué partícula subatómica es responsable de conferir masa a otras partículas elementales, según el Modelo Estándar de la física de partículas?",
+    "respuesta": "Higgs",
+    "siguienteFase": "Un cuerpo de hierro,\nque despierta con fuego.\nnAlimenta la espera,\ny calla cuando se enfría.",
+    "respuestaFase": "53080104"
+    },    
+    {
+    "pregunta": "Pregunta 4",
+    "texto": "¿Cuál fue el último país en unirse a la OTAN?",
+    "respuesta": "Suecia",
+    "siguienteFase": "Un refugio silencioso,\nque acoge sin preguntar.\nGuarda sueños y secretos,\ny a veces susurra descanso.\nSe abre cada noche,\ny calla con la mañana.",
+    "respuestaFase": "22559516"
+    },    
+    {
+    "pregunta": "Pregunta 5",
+    "texto": "Una pera cuesta 40 céntimos, una banana 60 céntimos y una ciruela 80 céntimos. ¿Cuánto cuesta una manzana? (dos palabras)",
+    "respuesta": "60",
+    "siguienteFase": "Apilado descanso entre la casa y el bosque,\ncallado, contengo historias de árboles antiguos.\nNo hablo, pero acompaño la luz y la vida,\ny quien me toca, despierta mi secreto.",
+    "respuestaFase": "74217812"
+    },
+    {
+    "pregunta": "Pregunta 6",
+    "texto": "Me doy para enseñar a tu guardia cómo reconocer a un invasor sin que éste tenga que entrar; llevo partes del enemigo o su recuerdo. ¿Qué soy?",
+    "respuesta": "Vacuna",
+    "siguienteFase": "Por mí corre el agua, mas nunca navego,\nno soy un río, aunque el calor entrego.\nEn filas me ves, de metal soldado,\nsi me tocas de cerca, saldrás asustado.",
+    "respuestaFase": "94440471"
+    },
+    {
+    "pregunta": "Pregunta 7",
+    "texto": "Calcular:∬(xcos(y)+2y) dA\ndonde R es el rectángulo: 0≤x≤2 , 0≤y≤𝜋/2",
+    "respuesta": "4+3pi",
+    "siguienteFase": "Un espejo que respira bajo el sol,\nguarda el reflejo y la calma.\nAbraza cuerpos sin juicios,\nsusurra frescura y se adormece al anochecer.",
+    "respuestaFase": "35729852"
+    }
+    ],
+    "teamB" : [
+    {
+    "pregunta": "Pregunta 1",
+    "texto": "¿Cuál es la capital de Uruguay?",
+    "respuesta": "Montevideo",
+    "siguienteFase": "Entre dos guardianes de madera y cielo,\nse decide el destino con cada vuelo.\nNi muralla ni umbral, mas frontera vital,\nmi silencio dicta gloria o derrota final.\nSoy el límite donde el valor se enfrenta,",
+    "respuestaFase": "20540316"
+
+    },
+    {
+    "pregunta": "Pregunta 2",
+    "texto": "2, 6, 12, 20, 30, ?",
+    "respuesta": "42",
+    "siguienteFase": "Vuelo sin alas, sin rumbo fijo,\nsiempre regreso por donde digo.\nNo soy ave ni soy avión,\nmas subo y bajo con emoción.",
+    "respuestaFase": "35426264"
+    }, 
+    {
+    "pregunta": "Pregunta 3",
+    "texto": "¿Qué partícula subatómica es responsable de conferir masa a otras partículas elementales, según el Modelo Estándar de la física de partículas?",
+    "respuesta": "Higgs",
+    "siguienteFase": "Entre madera y sombras murmuro,\nguardo al tesoro que el sol conjuro.\nNo tengo cerradura, ni rey, ni señor,\npero entro en escena cuando canta el albor.",
+    "respuestaFase": "45159988"
+
+    },
+    {
+    "pregunta": "Pregunta 4",
+    "texto": "¿Cuál fue el último país en unirse a la OTAN?",
+    "respuesta": "Suecia",
+    "siguienteFase": "No vuelo, mas atravieso el aire,\nmi viaje decide quién es el que pare.\nNi flecha ni lanza, mas fin tengo yo,\ny en mi impacto, la gloria se dio.",
+    "respuestaFase": "69390974"
+    }, 
+    {
+    "pregunta": "Pregunta 5",
+    "texto": "Una pera cuesta 40 céntimos, una banana 60 céntimos y una ciruela 80 céntimos. ¿Cuánto cuesta una manzana?",
+    "respuesta": "60",
+    "siguienteFase": "Siempre contengo lo que llega a mí,\naunque no soy río ni manantial aquí.\nAgua y restos encuentro sin cesar,\ny en mi fondo todo acaba por pasar.",
+    "respuestaFase": "53217556"
+
+    },
+    {
+    "pregunta": "Pregunta 6",
+    "texto": "Me doy para enseñar a tu guardia cómo reconocer a un invasor sin que éste tenga que entrar; llevo partes del enemigo o su recuerdo. ¿Qué soy?",
+    "respuesta": "Vacuna",
+    "siguienteFase": "Recibo cuerpos, suspiros y mirar,\naunque no camino, puedo acoger sin par.\nestigo de historias, de risas y llanto,\nen mi reposo todo tiene un manto.",
+    "respuestaFase": "88128090"
+    },
+    {
+    "pregunta": "Pregunta 7",
+    "texto": "Calcular:∬(xcos(y)+2y) dA\ndonde R es el rectángulo: 0≤x≤2 , 0≤y≤𝜋/2",
+    "respuesta": "4+3pi",
+    "siguienteFase": "Silencioso guardo lo que llega sin voz,\naunque no soy río, ni mar, ni pozo feroz.\nRecibo lo que el cuerpo quiere dejar,\ny en mi fondo todo puede pasar.",
+    "respuestaFase": "78015938"
+    }]
+}
