@@ -12,6 +12,8 @@ import 'package:casa_rural_1/sections/finalChest.dart';
 import 'package:casa_rural_1/sections/icon_classification.dart';
 import 'package:casa_rural_1/app/database_service.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:casa_rural_1/app/theme.dart';
+import 'package:casa_rural_1/sections/spooky_widgets.dart';
 import 'dart:convert';
 
 class Home extends StatefulWidget {
@@ -53,8 +55,8 @@ class _HomeState extends State<Home> {
     final snapshot = await _dbService.read(path: 'quiz/devices/$id');
 
     if (snapshot != null && snapshot.value != null) {
-      setState(() => deviceId = id);
-      _listenToScoreChanges(); // ✅ start real-time listener
+      if (mounted) setState(() => deviceId = id);
+      _listenToScoreChanges();
       getTeamValues();
     } else {
       await _dbService.create(path: 'quiz/devices/$id', data: {
@@ -64,7 +66,7 @@ class _HomeState extends State<Home> {
         'score': 0,
         'widgetTeam': widget.selection,
       });
-      setState(() => deviceId = id);
+      if (mounted) setState(() => deviceId = id);
       _listenToScoreChanges();
     }
   }
@@ -72,7 +74,7 @@ class _HomeState extends State<Home> {
   void _listenToScoreChanges() {
     FirebaseDatabase.instance.ref('quiz/devices/$deviceId/score').onValue.listen((event) {
       final val = event.snapshot.value;
-      if (val != null) {
+      if (val != null && mounted) {
         setState(() {
           final n = val is int ? val : (val is double ? val.toInt() : 0);
           puntuacion = n;
@@ -83,21 +85,27 @@ class _HomeState extends State<Home> {
 
   Future<void> loadData() async {
     final jsonString = await rootBundle.loadString('assets/questions.json');
-    data = json.decode(jsonString);
+    if (mounted) {
+      setState(() {
+        data = json.decode(jsonString);
+      });
+    }
   }
 
   void getTeamValues() async {
     final snapshot = await _dbService.read(path: 'quiz/devices/$deviceId');
     if (snapshot != null && snapshot.value != null) {
       final dataMap = snapshot.value as Map<dynamic, dynamic>;
-      setState(() {
-        nombreEquipoDefinido = dataMap['setName'] ?? false;
-        nombreEquipo = dataMap['name'] ?? "";
-        faseActual = dataMap['phase'] ?? 0;
-        widgetEquipo = dataMap['widgetTeam'] ?? "";
-        final rawScore = dataMap['score'];
-        puntuacion = (rawScore is int) ? rawScore : (rawScore is double ? rawScore.toInt() : 0);
-      });
+      if (mounted) {
+        setState(() {
+          nombreEquipoDefinido = dataMap['setName'] ?? false;
+          nombreEquipo = dataMap['name'] ?? "";
+          faseActual = dataMap['phase'] ?? 0;
+          widgetEquipo = dataMap['widgetTeam'] ?? "";
+          final rawScore = dataMap['score'];
+          puntuacion = (rawScore is int) ? rawScore : (rawScore is double ? rawScore.toInt() : 0);
+        });
+      }
     }
   }
 
@@ -144,8 +152,9 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> actualizarPuntuacion(int delta) async {
-    setState(() => puntuacion += delta);
-    await _dbService.update(path: 'quiz/devices/$deviceId', data: {'score': puntuacion});
+    // setState(() => puntuacion += delta); // Removed optimistic local update to rely on listener
+    final newScore = puntuacion + delta;
+     await _dbService.update(path: 'quiz/devices/$deviceId', data: {'score': newScore});
   }
 
   @override
@@ -160,31 +169,43 @@ class _HomeState extends State<Home> {
       );
     }
 
+    if (data.isEmpty) return const Center(child: CircularProgressIndicator(color: HalloweenTheme.pumpkinOrange));
+
     return Stack(
       fit: StackFit.expand,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 20, left: 30, right: 30, bottom: 55),
+          padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 60),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              ShaderMask(
-                shaderCallback: (bounds) => const LinearGradient(
-                  colors: [Color(0xFF4B0000), Color(0xFF8A0303), Color(0xFF1A0000)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
+              // Team Header
+              SpookyCard(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: AutoSizeText(
                   nombreEquipo,
                   maxLines: 1,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.creepster(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: HalloweenTheme.titleStyle.copyWith(color: Colors.white, fontSize: 35),
                 ),
               ),
-              Text(data[widgetEquipo]![faseActual]['pregunta'],
-                  style: GoogleFonts.creepster(fontSize: 30, color: Colors.white)),
-              Text(data[widgetEquipo]![faseActual]['texto'],
-                  style: GoogleFonts.creepster(fontSize: 24, color: Colors.white)),
+              
+              // Question Card
+              SpookyCard(
+                child: Column(
+                  children: [
+                     Text(data[widgetEquipo]![faseActual]['pregunta'],
+                        textAlign: TextAlign.center,
+                        style: HalloweenTheme.headerStyle.copyWith(color: HalloweenTheme.pumpkinOrange)),
+                     const SizedBox(height: 15),
+                     Text(data[widgetEquipo]![faseActual]['texto'],
+                        textAlign: TextAlign.center,
+                        style: HalloweenTheme.bodyStyle.copyWith(fontSize: 18)),
+                  ],
+                ),
+              ),
+
+              // Answer Section
               Submit(
                 selection: widgetEquipo,
                 faseActual: faseActual,
@@ -195,6 +216,8 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
+
+        // Help Button
         BotonAyuda(
           ayudaSolicitada: ayudaSolicitada,
           onSolicitarAyuda: () {
@@ -204,82 +227,54 @@ class _HomeState extends State<Home> {
             }
             showDialog(
               context: context,
-              builder: (context) => AlertDialog(
-                backgroundColor: Colors.black87,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                title: Text("Ayuda", style: GoogleFonts.creepster(color: Colors.red, fontSize: 28)),
-                content: Text(
-                  data[widgetEquipo]![faseActual]['pista'] ?? "Aquí puedes recibir una pista.",
-                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("Cerrar", style: TextStyle(color: Colors.redAccent)),
-                  ),
-                ],
+              builder: (context) => SpookyDialog(
+                title: "Pista Maldita",
+                content: data[widgetEquipo]![faseActual]['pista'] ?? "No hay ayuda para ti...",
+                onClose: () => Navigator.pop(context),
               ),
             );
           },
         ),
+
+        // Leaderboard Icon
         if (!mostrarOverlay)
           IconClassification(mostrarRanking: mostrarRanking, onRanking: setClassification),
+        
+        // Leaderboard Overlay
         if (mostrarRanking) Classification(id: deviceId, onClose: setClassification),
+        
+        // Phase Success Overlay
         if (mostrarOverlay)
-          Center(
-            child: Card(
-              color: Colors.black,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20), side: const BorderSide(color: Colors.red, width: 2)),
-              margin: const EdgeInsets.all(10),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
+          Container(
+            color: Colors.black.withOpacity(0.8),
+            padding: const EdgeInsets.all(20),
+            child: Center(
+              child: SpookyCard(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
+                    Text("¡Correcto!", style: HalloweenTheme.titleStyle),
+                    const SizedBox(height: 20),
                     Text(data[widgetEquipo]![faseActual]['siguienteFase'],
-                        style: GoogleFonts.montserrat(fontSize: 20, color: Colors.white)),
+                        textAlign: TextAlign.center,
+                        style: HalloweenTheme.bodyStyle.copyWith(fontStyle: FontStyle.italic)),
+                    const SizedBox(height: 30),
                     TextField(
                       controller: _controllerOverlay,
                       style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Introduce tu respuesta",
-                        labelStyle: TextStyle(color: Colors.white),
-                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.black45,
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                        hintText: "Código secreto...",
+                        hintStyle: TextStyle(color: Colors.white54),
+                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: HalloweenTheme.pumpkinOrange)),
                       ),
                       onSubmitted: (_) => validarOverlay(),
                     ),
-                    BotonAyudaSimple(
-                      ayudaSolicitada: ayudaSolicitada,
-                      onSolicitarAyuda: () {
-                        if (!ayudaSolicitada) {
-                          actualizarPuntuacion(-3);
-                          setState(() => ayudaSolicitada = true);
-                        }
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            backgroundColor: Colors.black87,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                            title: Text("Ayuda", style: GoogleFonts.creepster(color: Colors.red, fontSize: 28)),
-                            content: Text(
-                              data[widgetEquipo]![faseActual]['pista'] ?? "Aquí puedes recibir una pista.",
-                              style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text("Cerrar", style: TextStyle(color: Colors.redAccent)),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-
+                    const SizedBox(height: 20),
+                    if (showMessage)
+                       Text("Código incorrecto, sufre las consecuencias...", style: TextStyle(color: Colors.red)),
                   ],
                 ),
               ),

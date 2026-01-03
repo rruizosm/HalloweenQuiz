@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:casa_rural_1/app/theme.dart';
+import 'package:casa_rural_1/sections/spooky_widgets.dart';
 
 class BotonAyudaSimple extends StatelessWidget {
   final bool ayudaSolicitada;
@@ -16,26 +17,14 @@ class BotonAyudaSimple extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomRight, // Se alinea abajo a la derecha
       child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor:
-                ayudaSolicitada ? Colors.grey[700] : Colors.red[800],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            elevation: 6,
-          ),
+        padding: const EdgeInsets.only(top: 10, bottom: 5),
+        child: SpookyButton(
+          text: ayudaSolicitada ? "Ayuda solicitada" : "Ayuda",
           onPressed: ayudaSolicitada ? null : onSolicitarAyuda,
-          child: Text(
-            ayudaSolicitada ? "Ayuda solicitada" : "Ayuda",
-            style: GoogleFonts.montserrat(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          color: ayudaSolicitada ? Colors.grey[800] : HalloweenTheme.bloodRed,
+          textColor: Colors.white,
+          width: 160,
+          height: 40,
         ),
       ),
     );

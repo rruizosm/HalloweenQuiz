@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:casa_rural_1/app/database_service.dart';
+import 'package:casa_rural_1/app/theme.dart';
+
 class Submit extends StatefulWidget {
   final String selection;
   final int faseActual;
@@ -40,11 +42,17 @@ class _SubmitState extends State<Submit> {
 
   Future<void> loadData() async {
     final jsonString = await rootBundle.loadString('assets/questions.json');
-    data = json.decode(jsonString);
+    if (mounted) {
+       setState(() {
+         data = json.decode(jsonString);
+       });
+    }
   }
 
   void comprobarRespuesta() {
     final respuestaUsuario = _controllerPregunta.text.trim();
+    if (data.isEmpty) return; // Guard clause
+
     final respuestaCorrecta = data[widget.selection]![widget.faseActual]['respuesta'];
     final acierto = respuestaUsuario.toLowerCase() == respuestaCorrecta.toLowerCase();
 
@@ -58,7 +66,7 @@ class _SubmitState extends State<Submit> {
       setState(() {
         _dbService.create(path: 'quiz/logs/${widget.deviceId}/${widget.faseActual}/$intentos', data: {'text': _controllerPregunta.text});
         _controllerPregunta.clear();
-        mensaje = "Respuesta incorrecta. Inténtalo de nuevo.";
+        mensaje = "¡Incorrecto! La oscuridad se ríe de ti...";
         showMessage = true;
         intentos++;
       });
@@ -75,20 +83,26 @@ class _SubmitState extends State<Submit> {
         TextField(
           controller: _controllerPregunta,
           style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: 'Respuesta',
-            labelStyle: TextStyle(color: Colors.white),
-            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.black45, // Slightly transparent black
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: HalloweenTheme.pumpkinOrange)),
+            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white30)),
+            labelText: 'Tu Respuesta',
+            labelStyle: TextStyle(color: Colors.white70),
+            suffixIcon: IconButton(
+              icon: Icon(Icons.send_rounded, color: HalloweenTheme.bloodRed),
+              onPressed: comprobarRespuesta,
+            ),
           ),
           onSubmitted: (_) => comprobarRespuesta(),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         if (showMessage)
           Text(
             mensaje,
-            style: GoogleFonts.montserrat(fontSize: 15, color: Colors.white),
+            style: GoogleFonts.montserrat(fontSize: 15, color: Colors.redAccent, fontWeight: FontWeight.bold),
           ),
       ],
     );

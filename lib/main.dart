@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'sections/home.dart';
+import 'app/theme.dart';
+import 'sections/spooky_widgets.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,39 +27,31 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: HalloweenTheme.pumpkinOrange,
+        scaffoldBackgroundColor: Colors.black, // Fallback
+        textTheme: TextTheme(
+          bodyMedium: HalloweenTheme.bodyStyle,
+        ),
+      ),
       home: Scaffold(
+        resizeToAvoidBottomInset: false, // Prevent keyboard from breaking layout
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: Colors.black,
+          backgroundColor: HalloweenTheme.midnightBlack,
           title: Text(
             'Casa Rural',
-            style: GoogleFonts.creepster(
-              fontSize: 50,
-              color: Colors.orangeAccent,
-              shadows: [
-                Shadow(
-                  blurRadius: 10,
-                  color: Colors.red,
-                  offset: Offset(3, 3),
-                ),
-              ],
+            style: HalloweenTheme.titleStyle,
+          ),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(2.0),
+            child: Container(
+              color: HalloweenTheme.bloodRed,
+              height: 2.0,
             ),
           ),
         ),
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF000000), // negro
-                Color(0xFF4A0E0E), // rojo sangre oscuro
-                Color(0xFFB71C1C), // rojo brillante
-                Color(0xFFFF6F00), // naranja fuego
-              ],
-              stops: [0.1, 0.4, 0.7, 1.0],
-            ),
-          ),
+        body: SpookyBackground(
           child: _selection == null
               ? SelectionScreen(
                   onSelected: (choice) {
@@ -81,55 +74,37 @@ class SelectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Elige una opción",
-              style: GoogleFonts.creepster(
-                fontSize: 30,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildOptionButton(context, "teamA"),
-                const SizedBox(width: 20),
-                _buildOptionButton(context, "teamB"),
-              ],
-            )
-          ],
-        ),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Elige tu Destino",
+            style: HalloweenTheme.headerStyle.copyWith(fontSize: 35),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 50),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildOptionButton(context, "teamA", "Equipo A"),
+              const SizedBox(width: 30),
+              _buildOptionButton(context, "teamB", "Equipo B"),
+            ],
+          )
+        ],
       ),
     );
   }
 
-  Widget _buildOptionButton(BuildContext context, String team) {
-    return SizedBox(
-      width: 180,
-      height: 180,
-      child: Card(
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          onPressed: () => onSelected(team),
-          child: Text(
-            team,
-            style: GoogleFonts.creepster(
-              fontSize: 30,
-              color: Colors.black,
-            ),
-          ),
-        ),
-      ),
+  Widget _buildOptionButton(BuildContext context, String value, String label) {
+    return SpookyButton(
+      text: label,
+      onPressed: () => onSelected(value),
+      width: 140,
+      height: 140,
+      color: HalloweenTheme.charcoal,
+      textColor: HalloweenTheme.pumpkinOrange,
     );
   }
 }

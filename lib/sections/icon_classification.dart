@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:casa_rural_1/app/theme.dart';
 
 class IconClassification extends StatelessWidget {
   final bool mostrarRanking;
@@ -20,13 +21,13 @@ class IconClassification extends StatelessWidget {
           child: Container(
             height: 60,
             width: double.infinity,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                     colors: [
-                      Color(0xFFFF6F00), // naranja fuego
-                      Color.fromARGB(255, 255, 226, 38), // naranja brillante
+                      HalloweenTheme.pumpkinOrange,
+                      Color(0xFFFFD54F),
                     ],
                     stops: [0.0, 1.0],
                 ),
