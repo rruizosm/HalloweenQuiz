@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
-import 'package:casa_rural_1/app/theme.dart';
+import 'package:halloween_quiz/app/theme.dart';
 
 class SpookyBackground extends StatelessWidget {
   final Widget child;

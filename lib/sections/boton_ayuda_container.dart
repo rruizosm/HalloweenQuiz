@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:casa_rural_1/app/theme.dart';
-import 'package:casa_rural_1/sections/spooky_widgets.dart';
+import 'package:halloween_quiz/app/theme.dart';
+import 'package:halloween_quiz/sections/spooky_widgets.dart';
 
 class BotonAyudaSimple extends StatelessWidget {
   final bool ayudaSolicitada;

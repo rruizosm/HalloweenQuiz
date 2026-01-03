@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:casa_rural_1/app/theme.dart';
+import 'package:halloween_quiz/app/theme.dart';
 
 class IconClassification extends StatelessWidget {
   final bool mostrarRanking;

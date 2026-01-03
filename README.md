@@ -2,7 +2,7 @@
 
 A spooky, interactive quiz application built with **Flutter** and **Firebase**, designed for group events and "Casa Rural" getaways.
 
-![Halloween Quiz Preview](https://github.com/user-attachments/assets/placeholder-image-if-available)  
+![Halloween Quiz Preview](https://thehalloweenquiz.netlify.app/)  
 *(Note: Visuals feature a custom "Spooky" design system with glassmorphism and animated gradients)*
 
 ## 👻 Overview

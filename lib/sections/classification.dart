@@ -2,9 +2,9 @@ import 'dart:ui';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:casa_rural_1/app/database_service.dart';
-import 'package:casa_rural_1/app/theme.dart';
-import 'package:casa_rural_1/sections/spooky_widgets.dart';
+import 'package:halloween_quiz/app/database_service.dart';
+import 'package:halloween_quiz/app/theme.dart';
+import 'package:halloween_quiz/sections/spooky_widgets.dart';
 
 class Classification extends StatefulWidget {
   final VoidCallback onClose;

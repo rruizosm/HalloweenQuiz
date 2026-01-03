@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:casa_rural_1/app/database_service.dart';
-import 'package:casa_rural_1/app/theme.dart';
+import 'package:halloween_quiz/app/database_service.dart';
+import 'package:halloween_quiz/app/theme.dart';
 
 class SetName extends StatefulWidget {
   final String selection;

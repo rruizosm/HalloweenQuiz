@@ -1,5 +1,5 @@
-name: casa_rural_1
-description: "A new Flutter project."
+name: halloween_quiz
+description: "A spooky, interactive quiz application for group events, featuring real-time syncing and a custom Halloween theme."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

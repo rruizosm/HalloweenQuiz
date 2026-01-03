@@ -1,19 +1,19 @@
-import 'package:casa_rural_1/sections/boton_ayuda_container.dart';
-import 'package:casa_rural_1/sections/classification.dart';
-import 'package:casa_rural_1/sections/device_id_service.dart';
-import 'package:casa_rural_1/sections/setname.dart';
-import 'package:casa_rural_1/sections/submit.dart';
-import 'package:casa_rural_1/sections/boton_ayuda.dart';
+import 'package:halloween_quiz/sections/boton_ayuda_container.dart';
+import 'package:halloween_quiz/sections/classification.dart';
+import 'package:halloween_quiz/sections/device_id_service.dart';
+import 'package:halloween_quiz/sections/setname.dart';
+import 'package:halloween_quiz/sections/submit.dart';
+import 'package:halloween_quiz/sections/boton_ayuda.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:casa_rural_1/sections/finalChest.dart';
-import 'package:casa_rural_1/sections/icon_classification.dart';
-import 'package:casa_rural_1/app/database_service.dart';
+import 'package:halloween_quiz/sections/finalChest.dart';
+import 'package:halloween_quiz/sections/icon_classification.dart';
+import 'package:halloween_quiz/app/database_service.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:casa_rural_1/app/theme.dart';
-import 'package:casa_rural_1/sections/spooky_widgets.dart';
+import 'package:halloween_quiz/app/theme.dart';
+import 'package:halloween_quiz/sections/spooky_widgets.dart';
 import 'dart:convert';
 
 class Home extends StatefulWidget {

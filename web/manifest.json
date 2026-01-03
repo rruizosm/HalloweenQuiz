@@ -1,6 +1,6 @@
 {
-    "name": "casa_rural_1",
-    "short_name": "casa_rural_1",
+    "name": "Halloween Quiz",
+    "short_name": "HalloweenQuiz",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
